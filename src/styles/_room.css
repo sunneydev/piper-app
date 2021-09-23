@@ -1,0 +1,29 @@
+body {
+    background-color: #000;
+    color: white;
+}
+
+/* body {
+  height: 100vh;
+}
+
+.room {
+  display: grid;
+  grid-template-areas:
+    "header header header header"
+    "left left left right"
+    "left left left right";
+}
+
+.left {
+  grid-area: left;
+  height: 100vh;
+}
+
+.right {
+  grid-area: right;
+}
+
+.header {
+  grid-area: header;
+} */

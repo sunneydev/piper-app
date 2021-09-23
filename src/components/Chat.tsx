@@ -1,6 +1,7 @@
-import { Action, Message, User } from "../types";
+import { Message, User } from "../types";
 import { groupByProperty } from "../utils";
 import airplane from "../assets/icons/airplane.svg";
+import { useEffect, useRef } from "react";
 
 const Messages = (props: { messages: Message[] }) => {
   const { messages } = props;
@@ -8,7 +9,11 @@ const Messages = (props: { messages: Message[] }) => {
 
   return (
     <div className="grouped-chat-messages">
-      <img src={user?.avatar} className="chat-messages-author-avatar owner" />
+      <img
+        src={user?.avatar}
+        className="chat-messages-author-avatar owner"
+        alt={`Avatar of ${user.name}`}
+      />
       <div className="chat-messages">
         <div className="grouped-chat-messages-meta">
           <p className="chat-messages-author-name">{messages[0].author.name}</p>
@@ -28,10 +33,17 @@ const Chat = (props: {
   sendMessage: (message: Message) => void;
   messages?: Message[];
 }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  });
+
   if (!props.messages) {
     return <></>;
   }
-  console.log("rendered");
+
   const groupedMessages = groupByProperty(props.messages, "authorId");
 
   return (
@@ -39,6 +51,7 @@ const Chat = (props: {
       <div
         className="grouped-chat-messages-wrapper"
         style={{ overflowY: "auto" }}
+        ref={ref}
       >
         {groupedMessages.map((gm) => (
           <Messages messages={gm} />
@@ -77,7 +90,11 @@ const Chat = (props: {
           }}
         />
         <div title="Send Message" className="send-button">
-          <img src={airplane} className="send-button-icon" />
+          <img
+            src={airplane}
+            className="send-button-icon"
+            alt={"Send Message"}
+          />
         </div>
       </div>
     </div>

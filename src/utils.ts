@@ -15,7 +15,7 @@ export const groupByProperty = <T extends { [key: string]: any }>(
   for (let i = 0; i < array.length; i++) {
     if (!i) {
       elements[li] = [];
-    } else if (array[i - 1][key] != array[i][key]) {
+    } else if (array[i - 1][key] !== array[i][key]) {
       li++;
       elements[li] = [];
     }

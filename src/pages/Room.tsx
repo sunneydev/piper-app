@@ -3,12 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "../Auth";
-import Avatar from "../components/Avatar";
 import Button from "../components/Button";
 import Center from "../components/Center";
 import Chat from "../components/Chat";
 import Video from "../components/Video";
-import { Action, RoomResponse, RoomState, VideoData } from "../types";
+import { Action, RoomResponse, RoomState } from "../types";
 
 const reducer = (state: RoomState, action: Action) => {
   switch (action.type) {
@@ -89,7 +88,10 @@ const Room = (props: { room: RoomState }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [state, dispatch] = React.useReducer(reducer, props.room);
 
-  const emitAction = (action: Action) => socket?.emit("action", action);
+  const emitAction = (action: Action) => {
+    dispatch(action);
+    socket?.emit("action", action);
+  };
 
   useEffect(() => {
     if (socket) {
@@ -105,6 +107,11 @@ const Room = (props: { room: RoomState }) => {
     setSocket(_socket);
 
     _socket.on("connect", () => {
+      dispatch({
+        type: "ADD",
+        property: "users",
+        payload: auth.user,
+      });
       _socket.emit("join", { roomId: room.id, user: auth.user });
       _socket.on("action", (action: Action) => dispatch(action));
     });
@@ -134,7 +141,7 @@ const Room = (props: { room: RoomState }) => {
         </div>
         <div className="right">
           {state.users.map((u) => (
-            <img src={u.avatar} />
+            <img src={u.avatar} alt={`Avatar of ${u.name}`} />
           ))}
         </div>
       </div>
@@ -145,8 +152,7 @@ const Room = (props: { room: RoomState }) => {
               <Video
                 videoData={{
                   ...state.video,
-                  // url: state.video.url,
-                  url: "https://api.imovies.cc/api/v1/movies/44822/files/1318315",
+                  url: "https://api.imovies.cc/api/v1/movies/44822/files/1318688",
                 }}
                 owner={state.ownerId === auth.user.id}
                 emitAction={emitAction}

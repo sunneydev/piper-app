@@ -1,51 +1,53 @@
+import Box from "../components/Box";
+import "../styles/borealis.min.css";
+import panelArrowRight from "../assets/icons/panel-arrow-right.svg";
+import add from "../assets/icons/add.svg";
 import axios from "axios";
-import { Link, useHistory } from "react-router-dom";
-import { useAuth } from "../Auth";
-import Button from "../components/Button";
 import { RoomData } from "../types";
+import { useHistory } from "react-router";
+import { useAuth } from "../Auth";
 
-const Home = () => {
-  const auth = useAuth();
+const _Home = () => {
   const history = useHistory();
-
-  const { name } = auth.user;
+  const auth = useAuth();
 
   return (
-    <div
-      style={{
-        display: "grid",
-        justifyItems: "center",
-      }}
-    >
-      <h1 style={{ textAlign: "center", fontSize: "4rem" }}>Hey, {name}</h1>
-
-      <div
-        style={{
-          display: "grid",
-          marginTop: "5rem",
-          width: "40%",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gridGap: "1rem",
-        }}
-      >
-        <Button
-          onClick={() => {
-            axios
-              .post<RoomData>("/room", {
-                ownerId: auth.user.id,
-              })
-              .then((res) => history.push(`/room/${res.data.id}`));
-          }}
-        >
-          Create room
-        </Button>
-        <Button>Join room</Button>
-        <Link to="/register">
-          <Button style={{ width: "100%", height: "100%" }}>Register</Button>
-        </Link>
+    <div>
+      <div className="content is-center">
+        <div className="home">
+          <h1 className="title">Welcome Home</h1>
+          <p className="subtitle">
+            It's never been easier to join or start a room with your friends.
+            <br />
+            Select an option below to get started:
+          </p>
+          <div className="options">
+            <Box
+              icon={panelArrowRight}
+              header={"Join a Room"}
+              description={
+                "Received an invite link or an invite code for a room? Enter it here!"
+              }
+            />
+            <Box
+              icon={add}
+              header="Create a Room"
+              description={
+                "Need a room where you can watch anything with your friends? This is the place to go"
+              }
+              onClick={() => {
+                axios
+                  .post<RoomData>("/room", {
+                    ownerId: auth.user.id,
+                  })
+                  .then((res) => history.push(`/room/${res.data.id}`));
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default _Home;

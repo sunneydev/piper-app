@@ -1,0 +1,9 @@
+
+.gcloudignore
+.git
+.gitignore
+src
+.vscode
+public
+
+node_modules/

@@ -4,17 +4,10 @@ import { Action, VideoData } from "../types";
 const Video = (props: {
   videoData: VideoData;
   owner: boolean;
-  // emitVideoData: (videoData: VideoData) => void;
   emitAction: (action: Action) => void;
 }) => {
-  const {
-    // emitVideoData,
-    emitAction,
-    owner,
-    videoData,
-  } = props;
+  const { emitAction, owner, videoData } = props;
 
-  const [ticker, setTicker] = useState<NodeJS.Timeout>();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const emitVideoData = () => {
@@ -59,12 +52,9 @@ const Video = (props: {
   };
 
   useEffect(() => {
-    if (ticker) {
-      clearInterval(ticker);
-    }
-
-    setTicker(setInterval(handleTicker, 100000));
-  }, [videoData]);
+    const interval = setInterval(handleTicker, 100);
+    return () => clearInterval(interval);
+  }, [videoData, handleTicker]);
 
   return (
     <video
