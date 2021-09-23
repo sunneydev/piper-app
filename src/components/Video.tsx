@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Action, VideoData } from "../types";
 
 const Video = (props: {
@@ -10,7 +10,7 @@ const Video = (props: {
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const emitVideoData = () => {
+  const emitVideoData = useCallback(() => {
     if (videoRef.current) {
       const video = videoRef.current;
       emitAction({
@@ -23,9 +23,9 @@ const Video = (props: {
         },
       });
     }
-  };
+  }, [owner, videoData, emitAction]);
 
-  const handleTicker = () => {
+  const handleTicker = useCallback(() => {
     if (!videoRef.current) {
       return;
     }
@@ -49,12 +49,12 @@ const Video = (props: {
     if (owner && !video.paused) {
       emitVideoData();
     }
-  };
+  }, [owner, videoData, emitVideoData]);
 
   useEffect(() => {
     const interval = setInterval(handleTicker, 100);
     return () => clearInterval(interval);
-  }, [videoData, handleTicker]);
+  }, [videoData, handleTicker, emitVideoData]);
 
   return (
     <video

@@ -89,8 +89,8 @@ const Room = (props: { room: RoomState }) => {
   const [state, dispatch] = React.useReducer(reducer, props.room);
 
   const emitAction = (action: Action) => {
-    dispatch(action);
     socket?.emit("action", action);
+    dispatch(action);
   };
 
   useEffect(() => {
@@ -148,7 +148,7 @@ const Room = (props: { room: RoomState }) => {
       <div className="content is-center">
         <div className="room-wrapper">
           <div className="room">
-            <div className="player-wrapper" style={{ width: "78%", bottom: 0 }}>
+            <div className="player-wrapper">
               <Video
                 videoData={{
                   ...state.video,

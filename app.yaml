@@ -3,4 +3,4 @@ handlers:
   - url: .*
     script: auto
 env_variables:
-  REACT_APP_API_URL: "https://piper-326910.oa.r.appspot.com"
+  REACT_APP_API_URL: "https://api.pipersync.tech"

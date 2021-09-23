@@ -47,7 +47,7 @@ const Chat = (props: {
   const groupedMessages = groupByProperty(props.messages, "authorId");
 
   return (
-    <div className="chat" style={{ width: "22%" }}>
+    <div className="chat">
       <div
         className="grouped-chat-messages-wrapper"
         style={{ overflowY: "auto" }}
