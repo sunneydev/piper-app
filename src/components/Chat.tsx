@@ -33,10 +33,12 @@ const Chat = (props: {
   sendMessage: (message: Message) => void;
   messages?: Message[];
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const groupChatDiv = useRef<HTMLDivElement>(null);
+  const inputElement = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollTop = ref.current.scrollHeight;
+    if (groupChatDiv.current) {
+      groupChatDiv.current.scrollTop = groupChatDiv.current.scrollHeight;
     }
   });
 
@@ -51,29 +53,16 @@ const Chat = (props: {
       <div
         className="grouped-chat-messages-wrapper"
         style={{ overflowY: "auto" }}
-        ref={ref}
+        ref={groupChatDiv}
       >
         {groupedMessages.map((gm) => (
           <Messages messages={gm} />
         ))}
-        <div
-          className="ps__rail-y"
-          style={{
-            top: "182px",
-            right: "0px",
-            height: "426px",
-          }}
-        >
-          <div
-            className="ps__thumb-y"
-            tabIndex={0}
-            style={{ top: "128px", height: "298px" }}
-          ></div>
-        </div>
       </div>
 
       <div className="chat-bar-wrapper">
         <input
+          ref={inputElement}
           type="text"
           placeholder="Say something cool..."
           className="chat-bar"
@@ -94,6 +83,19 @@ const Chat = (props: {
             src={airplane}
             className="send-button-icon"
             alt={"Send Message"}
+            onClick={(e) => {
+              if (!inputElement.current) {
+                return;
+              }
+
+              const content = inputElement.current?.value;
+              inputElement.current.value = "";
+              props.sendMessage({
+                authorId: props.user.id,
+                author: props.user,
+                content,
+              });
+            }}
           />
         </div>
       </div>

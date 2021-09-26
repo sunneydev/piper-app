@@ -52,7 +52,7 @@ const Video = (props: {
   }, [owner, videoData, emitVideoData]);
 
   useEffect(() => {
-    const interval = setInterval(handleTicker, 100);
+    const interval = setInterval(handleTicker, 1000);
     return () => clearInterval(interval);
   }, [videoData, handleTicker, emitVideoData]);
 

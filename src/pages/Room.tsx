@@ -8,6 +8,11 @@ import Center from "../components/Center";
 import Chat from "../components/Chat";
 import Video from "../components/Video";
 import { Action, RoomResponse, RoomState } from "../types";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import add from "../assets/icons/add.svg";
+
+const ReactSwal = withReactContent(Swal);
 
 const reducer = (state: RoomState, action: Action) => {
   switch (action.type) {
@@ -138,6 +143,39 @@ const Room = (props: { room: RoomState }) => {
           >
             {state.id}
           </h1>
+          {state.ownerId === auth.user.id ? (
+            <img
+              src={add}
+              className="icon"
+              alt="add"
+              style={{
+                filter: "invert(1)",
+                marginLeft: "1rem",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                ReactSwal.fire({
+                  background: "#000",
+                  input: "text",
+                  inputPlaceholder: "Enter video url",
+                  preConfirm: (url: string) => {
+                    if (!url || !url.startsWith("http")) {
+                      return;
+                    }
+                    emitAction({
+                      type: "SET",
+                      property: "video",
+                      payload: {
+                        url,
+                        time: 0,
+                        paused: false,
+                      },
+                    });
+                  },
+                });
+              }}
+            />
+          ) : null}
         </div>
         <div className="right">
           {state.users.map((u) => (
@@ -152,7 +190,6 @@ const Room = (props: { room: RoomState }) => {
               <Video
                 videoData={{
                   ...state.video,
-                  url: "https://api.imovies.cc/api/v1/movies/44822/files/1318688",
                 }}
                 owner={state.ownerId === auth.user.id}
                 emitAction={emitAction}
