@@ -1,6 +1,0 @@
-runtime: nodejs14
-handlers:
-  - url: .*
-    script: auto
-env_variables:
-  REACT_APP_API_URL: "https://api.pipersync.tech"
