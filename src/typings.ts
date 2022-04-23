@@ -10,14 +10,34 @@ export interface Message {
   author: User;
 }
 
-export type Room = {
+export interface IVideo {
+  url: string;
+  time: number;
+  paused: boolean;
+}
+export interface IRoom {
   id: string;
   users: User[];
   messages: Message[];
   ownerId: string;
-  video: {
-    url: string;
-    time: number;
-    paused: boolean;
-  };
-};
+  video?: IVideo;
+  loading: boolean;
+}
+
+export type Action =
+  | {
+      type: "add-user" | "remove-user";
+      payload: User;
+    }
+  | {
+      type: "add-message";
+      payload: Message;
+    }
+  | {
+      type: "set-video";
+      payload: IVideo;
+    }
+  | {
+      type: "room";
+      payload: IRoom;
+    };

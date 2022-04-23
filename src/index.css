@@ -6,5 +6,5 @@ html,
 body {
   background-color: black;
   color: white;
-  height: 100vh;
+  margin: 0;
 }

@@ -7,7 +7,9 @@ import axios from "axios";
 import React from "react";
 import "./index.css";
 
-axios.defaults.baseURL = "https://piper-api-production-b2c0.up.railway.app";
+axios.defaults.baseURL = import.meta.env.PROD
+  ? import.meta.env.API_URL
+  : "http://localhost:5000";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
