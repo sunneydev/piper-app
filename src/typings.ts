@@ -4,9 +4,9 @@ export interface User {
   avatar: string;
 }
 
-export interface Message {
-  content: string;
+export interface IMessage {
   authorId: string;
+  content: string;
   author: User;
 }
 
@@ -17,11 +17,16 @@ export interface IVideo {
 }
 export interface IRoom {
   id: string;
+  name: string;
   users: User[];
-  messages: Message[];
+  messages: IMessage[];
   ownerId: string;
-  video?: IVideo;
+  video: IVideo;
+}
+
+export interface IRoomState extends IRoom {
   loading: boolean;
+  error?: string;
 }
 
 export type Action =
@@ -31,7 +36,7 @@ export type Action =
     }
   | {
       type: "add-message";
-      payload: Message;
+      payload: IMessage;
     }
   | {
       type: "set-video";

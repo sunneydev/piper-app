@@ -6,20 +6,35 @@ import Room from "./pages/Room";
 import axios from "axios";
 import React from "react";
 import "./index.css";
+import { createTheme, NextUIProvider } from "@nextui-org/react";
+import Center from "./components/Center";
+import Create from "./pages/Create";
+import Join from "./pages/Join";
+import CenterLayout from "./components/CenterLayout";
+
+const myDarkTheme = createTheme({
+  type: "dark",
+});
 
 axios.defaults.baseURL = import.meta.env.PROD
   ? import.meta.env.API_URL
-  : "http://localhost:5000";
+  : "http://188.129.204.225:5000";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <UserProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/room/:roomId" element={<Room />} />
-        </Routes>
-      </BrowserRouter>
-    </UserProvider>
+    <NextUIProvider theme={myDarkTheme}>
+      <UserProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route index element={<Home />} />
+            <Route path="room" element={<CenterLayout />}>
+              <Route path="new" element={<Create />} />
+              <Route path="join" element={<Join />} />
+            </Route>
+            <Route path="/room/:roomId" element={<Room />} />
+          </Routes>
+        </BrowserRouter>
+      </UserProvider>
+    </NextUIProvider>
   </React.StrictMode>
 );

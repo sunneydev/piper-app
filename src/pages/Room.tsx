@@ -1,14 +1,122 @@
-import type { Action, IRoom } from "../typings";
-import { useEffect, useReducer } from "react";
+import type { Action, IRoom, IRoomState } from "../typings";
+import type { Socket } from "socket.io-client";
+
+import { Avatar, Loading } from "@nextui-org/react";
+import { useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useUser } from "../lib/useUser";
 import Video from "../components/Video";
 import Header from "../components/Header";
-import { Avatar, Loading } from "@nextui-org/react";
 import Center from "../components/Center";
+import Chat from "../components/Chat";
 
-const reducer = (state: IRoom, action: Action): IRoom => {
+const Room = () => {
+  const initialState: IRoomState = {
+    id: "",
+    name: "",
+    users: [],
+    messages: [],
+    video: {
+      url: "",
+      paused: true,
+      time: 0,
+    },
+    ownerId: "",
+    loading: true,
+  };
+
+  const user = useUser();
+  const { roomId } = useParams();
+  const [state, _dispatch] = useReducer(reducer, initialState);
+  const [socket, setSocket] = useState<Socket>();
+
+  useEffect(() => {
+    const socket = io("http://188.129.204.225:5000");
+
+    setSocket(socket);
+
+    socket.on("connect", () => {
+      socket.emit("join", { roomId, user });
+      socket.on("action", _dispatch);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [roomId, user]);
+
+  if (state.loading) {
+    return (
+      <Center>
+        <Loading size={"xl"} type="points" textColor="white" />
+      </Center>
+    );
+  }
+
+  const dispatch = (action: Action) => {
+    _dispatch(action);
+    socket?.emit("action", action);
+  };
+
+  const sendMessage = (message: string) => {
+    if (message.startsWith("/set")) {
+      const [, videoUrl] = message.split(" ");
+
+      if (videoUrl) {
+        dispatch({
+          type: "set-video",
+          payload: {
+            url: videoUrl,
+            paused: false,
+            time: 0,
+          },
+        });
+      }
+    }
+    dispatch({
+      type: "add-message",
+      payload: {
+        authorId: user.id,
+        author: user,
+        content: message,
+      },
+    });
+  };
+
+  return (
+    <div className="flex flex-col">
+      <Header>
+        <Avatar.Group>
+          {state.users.map((user) => (
+            <Avatar
+              key={user.id}
+              src={user.avatar}
+              size="xl"
+              color={"gradient"}
+              bordered
+            />
+          ))}
+        </Avatar.Group>
+      </Header>
+      <div
+        className="flex flex-col items-center md:flex-row "
+        style={{
+          height: "calc(100vh - 104px)",
+        }}
+      >
+        <Video
+          videoData={state.video}
+          emitAction={dispatch}
+          owner={state.ownerId === user.id}
+        />
+        <Chat messages={state.messages} onMessageSubmit={sendMessage} />
+      </div>
+    </div>
+  );
+};
+
+const reducer = (state: IRoomState, action: Action): IRoomState => {
   switch (action.type) {
     case "add-user":
     case "remove-user":
@@ -30,56 +138,13 @@ const reducer = (state: IRoom, action: Action): IRoom => {
         video: action.payload,
       };
     case "room":
-      return action.payload;
+      return {
+        ...action.payload,
+        loading: false,
+      };
     default:
       return state;
   }
-};
-
-const Room = () => {
-  const initialState: IRoom = {
-    id: "",
-    users: [],
-    messages: [],
-    video: undefined,
-    ownerId: "",
-    loading: true,
-  };
-
-  const user = useUser();
-  const { roomId } = useParams();
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  useEffect(() => {
-    const socket = io("http://localhost:5000");
-
-    socket.on("connect", () => {
-      socket.emit("join", { roomId, user });
-      socket.on("action", dispatch);
-    });
-
-    return () => {
-      socket.close();
-    };
-  }, [roomId, user]);
-
-  if (state.loading) {
-    return (
-      <Center>
-        <Loading />;
-      </Center>
-    );
-  }
-
-  return (
-    <div className="flex flex-col h-screen">
-      {state.users.map((user) => (
-        <Avatar src={user.avatar}></Avatar>
-      ))}
-      <Header />
-      <Video url={""} time={0} paused={false} />
-    </div>
-  );
 };
 
 export default Room;

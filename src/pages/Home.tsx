@@ -1,31 +1,28 @@
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../lib/useUser";
-import { Button } from "@nextui-org/react";
+import { useState } from "react";
+import { Button, Spacer } from "@nextui-org/react";
 import Center from "../components/Center";
-import axios from "axios";
-import { IRoom } from "../typings";
+import { Link } from "react-router-dom";
 
 const Home = () => {
-  const user = useUser();
-  const navigate = useNavigate();
-
-  const handleRoomCreation = async () =>
-    axios
-      .post<IRoom>("/room", {
-        ownerId: user.id,
-      })
-      .then((res) => navigate(`/room/${res.data.id}`))
-      .catch((err) => console.error(err));
+  const [create, setCreate] = useState(true);
+  const [roomName, setRoomName] = useState("");
 
   return (
-    <div className="h-screen">
-      <Center>
-        <div className="flex gap-4">
-          <Button>Create a room</Button>
-          <Button onClick={handleRoomCreation}>Join a room</Button>
-        </div>
-      </Center>
-    </div>
+    <Center>
+      <div>
+        <Link to={"/room/new"}>
+          <Button size={"xl"} color="gradient">
+            Create a room
+          </Button>
+        </Link>
+        <Spacer x={1} />
+        <Link to={"/room/join"}>
+          <Button size={"xl"} color="gradient">
+            Join a room
+          </Button>
+        </Link>
+      </div>
+    </Center>
   );
 };
 

@@ -5,7 +5,7 @@ import { generateId } from "../utils";
 
 type IUserContext = {
   register: (username?: string) => void;
-} & Partial<User>;
+} & User;
 
 export const UserContext = createContext<IUserContext>({
   id: "",
@@ -17,11 +17,17 @@ export const UserContext = createContext<IUserContext>({
 export const UserProvider = <T,>(props: PropsWithChildren<T>) => {
   const user = useUserProvider();
 
-  return <UserContext.Provider value={user}>{props.children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
+  );
 };
 
 const useUserProvider = () => {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User>({
+    id: "",
+    name: "",
+    avatar: "",
+  });
 
   const register = (username?: string) => {
     const userId = generateId();
