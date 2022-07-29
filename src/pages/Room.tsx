@@ -32,7 +32,7 @@ const Room = () => {
   const [socket, setSocket] = useState<Socket>();
 
   useEffect(() => {
-    const socket = io("http://188.129.204.225:5000");
+    const socket = io("https://piper.koba.pvt.ge");
 
     setSocket(socket);
 
