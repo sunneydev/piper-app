@@ -42,6 +42,9 @@ const Room = () => {
     });
 
     return () => {
+      socket.off("action");
+      socket.off("connect");
+      socket.removeAllListeners();
       socket.disconnect();
     };
   }, [roomId, user]);
@@ -89,13 +92,7 @@ const Room = () => {
       <Header>
         <Avatar.Group>
           {state.users.map((user) => (
-            <Avatar
-              key={user.id}
-              src={user.avatar}
-              size="xl"
-              color={"gradient"}
-              bordered
-            />
+            <Avatar key={user.id} src={user.avatar} size="xl" color={"gradient"} bordered />
           ))}
         </Avatar.Group>
       </Header>
@@ -105,11 +102,7 @@ const Room = () => {
           height: "calc(100vh - 104px)",
         }}
       >
-        <Video
-          videoData={state.video}
-          emitAction={dispatch}
-          owner={state.ownerId === user.id}
-        />
+        <Video videoData={state.video} emitAction={dispatch} owner={state.ownerId === user.id} />
         <Chat messages={state.messages} onMessageSubmit={sendMessage} />
       </div>
     </div>
