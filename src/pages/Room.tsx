@@ -84,7 +84,7 @@ const Room = () => {
   );
 
   useEffect(() => {
-    const socket = io("https://home.sunney.dev");
+    const socket = io("https://piper-api.sunney.dev");
 
     setSocket(socket);
 
