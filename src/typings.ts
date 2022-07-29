@@ -31,18 +31,21 @@ export interface IRoomState extends IRoom {
 
 export type Action =
   | {
-      type: "add-user" | "remove-user";
-      payload: User;
-    }
+    type: "add-user" | "remove-user";
+    payload: User;
+  }
   | {
-      type: "add-message";
-      payload: IMessage;
-    }
+    type: "add-message";
+    payload: IMessage;
+  }
   | {
-      type: "set-video";
-      payload: IVideo;
-    }
+    type: "set-video";
+    payload: IVideo;
+  }
   | {
-      type: "room";
-      payload: IRoom;
-    };
+    type: "room";
+    payload: IRoom;
+  } | {
+    type: "cmd";
+    payload: string;
+  }

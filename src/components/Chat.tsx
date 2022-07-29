@@ -38,10 +38,7 @@ const Messages = (props: { messages: IMessage[] }) => {
     <div className="overflow-y-auto h-56  md:h-full" ref={groupChatDiv}>
       {groupedMessages.map((groupedMessages, index) => (
         <div key={index}>
-          <GroupedMessages
-            messages={groupedMessages}
-            author={groupedMessages[0].author}
-          />
+          <GroupedMessages messages={groupedMessages} author={groupedMessages[0].author} />
           <Spacer />
         </div>
       ))}
@@ -55,6 +52,7 @@ const SendMessage = (props: { onSubmit: (message: string) => void }) => {
   return (
     <div className="flex gap-2 items-center">
       <Input
+        aria-label="Send message"
         ref={inputElement}
         fullWidth
         size="xl"
@@ -77,7 +75,7 @@ const Chat = (
   }
 ) => {
   return (
-    <div className=" w-full md:w-80 md:h-full flex flex-col justify-between border border-solid border-gray-100/20 border-x p-2">
+    <div className="w-full md:w-96 md:h-full flex flex-col justify-between border border-solid border-gray-100/20 border-x p-2">
       <Messages messages={props.messages} />
       <SendMessage onSubmit={props.onMessageSubmit} />
     </div>

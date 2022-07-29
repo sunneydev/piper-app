@@ -1,8 +1,8 @@
-import type { Action, IRoom, IRoomState } from "../typings";
+import type { Action, IRoomState } from "../typings";
 import type { Socket } from "socket.io-client";
 
 import { Avatar, Loading } from "@nextui-org/react";
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useUser } from "../lib/useUser";
@@ -31,8 +31,60 @@ const Room = () => {
   const [state, _dispatch] = useReducer(reducer, initialState);
   const [socket, setSocket] = useState<Socket>();
 
+  const commands = useMemo<{ [cmd in "pause" | "play" | "set"]: (args?: string[]) => Action }>(
+    () => ({
+      pause: () => ({
+        type: "set-video",
+        payload: {
+          ...state.video,
+          paused: true,
+        },
+      }),
+      play: () => ({
+        type: "set-video",
+        payload: {
+          ...state.video,
+          paused: false,
+        },
+      }),
+      set: (args) => ({
+        type: "set-video",
+        payload: {
+          time: 0,
+          paused: false,
+          url: args ? args[0] : "",
+        },
+      }),
+    }),
+    [state.video]
+  );
+
+  const dispatchCommand = useCallback(
+    (fullCmd: string) => {
+      const [command, ...args] = fullCmd.split(" ");
+      const aliases: {
+        [alias in keyof typeof commands]: string[];
+      } = {
+        pause: ["pause", "p", "pauw", "monopause", "pruw", "puwu", "mennopause", "menopause", "uwu"],
+        play: ["play", "start", "daiwye", "pway", "meow", "owo"],
+        set: ["set", "set-video", "set-video-url", "set-video-url-to", "set-video-url-to", "bruwu"],
+      };
+
+      const cmd = Object.entries(aliases).find(([, value]) => value.includes(command))?.[0] as
+        | keyof typeof commands
+        | undefined;
+
+      if (cmd) {
+        const action = commands[cmd](args);
+        dispatch(action);
+        dispatch({ type: "cmd", payload: cmd });
+      }
+    },
+    [state.video]
+  );
+
   useEffect(() => {
-    const socket = io("https://piper.koba.pvt.ge");
+    const socket = io("https://home.sunney.dev");
 
     setSocket(socket);
 
@@ -63,20 +115,11 @@ const Room = () => {
   };
 
   const sendMessage = (message: string) => {
-    if (message.startsWith("/set")) {
-      const [, videoUrl] = message.split(" ");
-
-      if (videoUrl) {
-        dispatch({
-          type: "set-video",
-          payload: {
-            url: videoUrl,
-            paused: false,
-            time: 0,
-          },
-        });
-      }
+    if (message.startsWith("/")) {
+      dispatchCommand(message.substring(1));
+      message = message.split(" ")[0];
     }
+
     dispatch({
       type: "add-message",
       payload: {

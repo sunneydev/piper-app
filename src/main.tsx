@@ -15,7 +15,7 @@ const myDarkTheme = createTheme({
   type: "dark",
 });
 
-axios.defaults.baseURL = "https://piper.koba.pvt.ge";
+axios.defaults.baseURL = "https://home.sunney.dev";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

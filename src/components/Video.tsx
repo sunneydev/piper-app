@@ -1,11 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { Action, IVideo } from "../typings";
 
-const Video = (props: {
-  videoData: IVideo;
-  owner: boolean;
-  emitAction: (action: Action) => void;
-}) => {
+const Video = (props: { videoData: IVideo; owner: boolean; emitAction: (action: Action) => void }) => {
   const { emitAction, owner, videoData } = props;
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -64,16 +60,19 @@ const Video = (props: {
   }, [videoRef.current]);
 
   return (
-    <video
-      muted
-      autoPlay
-      controls
-      style={{ width: "100%", height: "100%" }}
-      ref={videoRef}
-      src={videoData.url}
-      onPause={emitVideoData}
-      onPlay={emitVideoData}
-    />
+    <div className="border border-solid border-gray-100/20 p-2 w-full h-full">
+      <video
+        muted
+        autoPlay
+        controls
+        className="h-[93%] "
+        style={{ width: "100%", height: "100%" }}
+        ref={videoRef}
+        src={videoData.url}
+        onPause={emitVideoData}
+        onPlay={emitVideoData}
+      />
+    </div>
   );
 };
 
