@@ -14,7 +14,6 @@ import Chat from "../components/Chat";
 const Room = () => {
   const initialState: IRoomState = {
     id: "",
-    name: "",
     users: [],
     messages: [],
     video: {

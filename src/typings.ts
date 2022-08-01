@@ -17,7 +17,6 @@ export interface IVideo {
 }
 export interface IRoom {
   id: string;
-  name: string;
   users: User[];
   messages: IMessage[];
   ownerId: string;
