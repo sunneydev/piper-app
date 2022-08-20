@@ -1,7 +1,11 @@
 import { useEffect, useRef, useCallback } from "react";
 import { Action, IVideo } from "../typings";
 
-const Video = (props: { videoData: IVideo; owner: boolean; emitAction: (action: Action) => void }) => {
+const Video = (props: {
+  videoData: IVideo;
+  owner: boolean;
+  emitAction: (action: Action) => void;
+}) => {
   const { emitAction, owner, videoData } = props;
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -28,7 +32,7 @@ const Video = (props: { videoData: IVideo; owner: boolean; emitAction: (action: 
     const video = videoRef.current;
     const timeDiff = Math.abs(video.currentTime - videoData.time);
 
-    if (timeDiff > 2) {
+    if (timeDiff > 5) {
       video.currentTime = videoData.time;
     }
 

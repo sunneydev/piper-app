@@ -1,11 +1,11 @@
 import type { Action, IRoomState } from "../typings";
 import type { Socket } from "socket.io-client";
 
-import { Avatar, Loading } from "@nextui-org/react";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { Avatar, Loading } from "@nextui-org/react";
 import { useParams } from "react-router-dom";
-import { io } from "socket.io-client";
 import { useUser } from "../lib/useUser";
+import { io } from "socket.io-client";
 import Video from "../components/Video";
 import Header from "../components/Header";
 import Center from "../components/Center";
@@ -30,7 +30,9 @@ const Room = () => {
   const [state, _dispatch] = useReducer(reducer, initialState);
   const [socket, setSocket] = useState<Socket>();
 
-  const commands = useMemo<{ [cmd in "pause" | "play" | "set"]: (args?: string[]) => Action }>(
+  const commands = useMemo<{
+    [cmd in "pause" | "play" | "set" | "seek"]: (args?: string[]) => Action;
+  }>(
     () => ({
       pause: () => ({
         type: "set-video",
@@ -54,6 +56,22 @@ const Room = () => {
           url: args ? args[0] : "",
         },
       }),
+      seek: (args) => {
+        if (!args || !args.length)
+          return { type: "set-video", payload: state.video };
+
+        const seek = parseInt(args[0], 10);
+
+        const newTime = state.video.time - seek;
+
+        return {
+          type: "set-video",
+          payload: {
+            ...state.video,
+            time: newTime,
+          },
+        };
+      },
     }),
     [state.video]
   );
@@ -64,14 +82,32 @@ const Room = () => {
       const aliases: {
         [alias in keyof typeof commands]: string[];
       } = {
-        pause: ["pause", "p", "pauw", "monopause", "pruw", "puwu", "mennopause", "menopause", "uwu"],
+        pause: [
+          "pause",
+          "p",
+          "pauw",
+          "monopause",
+          "pruw",
+          "puwu",
+          "mennopause",
+          "menopause",
+          "uwu",
+        ],
         play: ["play", "start", "daiwye", "pway", "meow", "owo"],
-        set: ["set", "set-video", "set-video-url", "set-video-url-to", "set-video-url-to", "bruwu"],
+        set: [
+          "set",
+          "set-video",
+          "set-video-url",
+          "set-video-url-to",
+          "set-video-url-to",
+          "bruwu",
+        ],
+        seek: ["s", "seek", "mewo"],
       };
 
-      const cmd = Object.entries(aliases).find(([, value]) => value.includes(command))?.[0] as
-        | keyof typeof commands
-        | undefined;
+      const cmd = Object.entries(aliases).find(([, value]) =>
+        value.includes(command)
+      )?.[0] as keyof typeof commands | undefined;
 
       if (cmd) {
         const action = commands[cmd](args);
@@ -134,7 +170,13 @@ const Room = () => {
       <Header>
         <Avatar.Group>
           {state.users.map((user) => (
-            <Avatar key={user.id} src={user.avatar} size="xl" color={"gradient"} bordered />
+            <Avatar
+              key={user.id}
+              src={user.avatar}
+              size="xl"
+              color={"gradient"}
+              bordered
+            />
           ))}
         </Avatar.Group>
       </Header>
@@ -144,7 +186,11 @@ const Room = () => {
           height: "calc(100vh - 104px)",
         }}
       >
-        <Video videoData={state.video} emitAction={dispatch} owner={state.ownerId === user.id} />
+        <Video
+          videoData={state.video}
+          emitAction={dispatch}
+          owner={state.ownerId === user.id}
+        />
         <Chat messages={state.messages} onMessageSubmit={sendMessage} />
       </div>
     </div>
