@@ -30,21 +30,35 @@ export interface IRoomState extends IRoom {
 
 export type Action =
   | {
-    type: "add-user" | "remove-user";
-    payload: User;
-  }
+      type: "add-user" | "remove-user";
+      payload: User;
+    }
   | {
-    type: "add-message";
-    payload: IMessage;
-  }
+      type: "add-message";
+      payload: IMessage;
+    }
   | {
-    type: "set-video";
-    payload: IVideo;
-  }
+      type: "set-video";
+      payload: IVideo;
+    }
   | {
-    type: "room";
-    payload: IRoom;
-  } | {
-    type: "cmd";
-    payload: string;
-  }
+      type: "room";
+      payload: IRoom;
+    }
+  | {
+      type: "cmd";
+      payload: string;
+    };
+
+export type Language = "ENG" | "FRE" | "GEO" | "JPN" | "RUS";
+export type Type = "movie" | "series";
+
+export interface SearchResult {
+  id: number;
+  type: Type;
+  name: string;
+  poster: string;
+  languages: Language[];
+  imdb: number;
+  year: number;
+}
