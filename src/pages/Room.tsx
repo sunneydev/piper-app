@@ -139,7 +139,7 @@ const Room = () => {
   if (state.loading) {
     return (
       <Center>
-        <Loading size={"xl"} type="points" textColor="white" />
+        <Loading size={"xl"} />
       </Center>
     );
   }

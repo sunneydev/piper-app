@@ -1,18 +1,18 @@
-import { Loading } from "@nextui-org/react";
+import { Card, Loading } from "@nextui-org/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Center from "../components/Center";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useUser } from "../lib/useUser";
 import { IRoom } from "../typings";
 
 const Create = () => {
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const navigate = useNavigate();
   const user = useUser();
 
   const handleRoomCreation = async () =>
+    user.id &&
     axios
       .post<IRoom>("/room", {
         ownerId: user.id,
@@ -22,7 +22,14 @@ const Create = () => {
 
   useEffect(() => {
     handleRoomCreation();
-  }, []);
+  }, [user.id]);
+
+  if (error)
+    return (
+      <Center>
+        <Card className="p-4">{error}</Card>
+      </Center>
+    );
 
   return (
     <Center>
