@@ -5,14 +5,11 @@ import { Link } from "react-router-dom";
 import Search from "../components/Search";
 
 const Home = () => {
-  const [create, setCreate] = useState(true);
-  const [roomName, setRoomName] = useState("");
-
   return (
     <Center>
       <Search />
       <Link to={"/room/new"}>
-        <Button size={"xl"} color="gradient">
+        <Button size={"lg"} color="gradient">
           Create a room
         </Button>
       </Link>
