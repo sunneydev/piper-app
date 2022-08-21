@@ -1,192 +1,15 @@
-import type { Action, IRoomState } from "../typings";
-import type { Socket } from "socket.io-client";
-
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { Avatar, Loading } from "@nextui-org/react";
-import { useParams } from "react-router-dom";
 import { useUser } from "../lib/useUser";
-import { io } from "socket.io-client";
 import Video from "../components/Video";
 import Header from "../components/Header";
 import Center from "../components/Center";
 import Chat from "../components/Chat";
-
-const reducer = (state: IRoomState, action: Action): IRoomState => {
-  switch (action.type) {
-    case "add-user":
-    case "remove-user":
-      return {
-        ...state,
-        users:
-          action.type === "add-user"
-            ? [...state.users, action.payload]
-            : state.users.filter((user) => user.id !== action.payload.id),
-      };
-    case "add-message":
-      return {
-        ...state,
-        messages: [...state.messages, action.payload],
-      };
-    case "set-video":
-      return {
-        ...state,
-        video: action.payload,
-      };
-    case "room":
-      return {
-        ...action.payload,
-        loading: false,
-      };
-    default:
-      return state;
-  }
-};
+import IMovies from "../components/iMovies";
+import useRoom from "../lib/hooks/useRoom";
 
 const Room = () => {
-  const initialState: IRoomState = {
-    id: "",
-    users: [],
-    messages: [],
-    video: {
-      url: "",
-      paused: true,
-      time: 0,
-    },
-    ownerId: "",
-    loading: true,
-  };
-
   const user = useUser();
-  const { roomId } = useParams();
-  const [state, _dispatch] = useReducer(reducer, initialState);
-  const [socket, setSocket] = useState<Socket>();
-
-  const commands = useMemo<{
-    [cmd in "pause" | "play" | "set" | "seek"]: (args?: string[]) => Action;
-  }>(
-    () => ({
-      pause: () => ({
-        type: "set-video",
-        payload: {
-          ...state.video,
-          paused: true,
-        },
-      }),
-      play: () => ({
-        type: "set-video",
-        payload: {
-          ...state.video,
-          paused: false,
-        },
-      }),
-      set: (args) => ({
-        type: "set-video",
-        payload: {
-          time: 0,
-          paused: false,
-          url: args ? args[0] : "",
-        },
-      }),
-      seek: (args) => {
-        if (!args || !args.length)
-          return { type: "set-video", payload: state.video };
-
-        const seek = parseInt(args[0], 10);
-
-        const newTime = state.video.time - seek;
-
-        return {
-          type: "set-video",
-          payload: {
-            ...state.video,
-            time: newTime,
-          },
-        };
-      },
-    }),
-    [state.video]
-  );
-
-  const dispatchCommand = useCallback(
-    (fullCmd: string) => {
-      const [command, ...args] = fullCmd.split(" ");
-      const aliases: {
-        [alias in keyof typeof commands]: string[];
-      } = {
-        pause: [
-          "pause",
-          "p",
-          "pauw",
-          "monopause",
-          "pruw",
-          "puwu",
-          "mennopause",
-          "menopause",
-          "uwu",
-        ],
-        play: ["play", "start", "daiwye", "pway", "meow", "owo"],
-        set: [
-          "set",
-          "set-video",
-          "set-video-url",
-          "set-video-url-to",
-          "set-video-url-to",
-          "bruwu",
-        ],
-        seek: ["s", "seek", "mewo"],
-      };
-
-      const cmd = Object.entries(aliases).find(([, value]) =>
-        value.includes(command)
-      )?.[0] as keyof typeof commands | undefined;
-
-      if (cmd) {
-        const action = commands[cmd](args);
-        dispatch(action);
-        dispatch({ type: "cmd", payload: cmd });
-      }
-    },
-    [state.video]
-  );
-
-  useEffect(() => {
-    const socket = io("http://localhost:5000");
-
-    setSocket(socket);
-
-    socket.on("connect", () => {
-      socket.emit("join", { roomId, user });
-      socket.on("action", _dispatch);
-    });
-
-    return () => {
-      socket.off("action");
-      socket.off("connect");
-      socket.removeAllListeners();
-      socket.disconnect();
-    };
-  }, [roomId, user]);
-
-  const dispatch = (action: Action) => {
-    _dispatch(action);
-    socket?.emit("action", action);
-  };
-
-  const sendMessage = (message: string) => {
-    if (message.startsWith("/")) {
-      dispatchCommand(message.substring(1));
-      message = message.split(" ")[0];
-    }
-
-    dispatch({
-      type: "add-message",
-      payload: {
-        authorId: user.id,
-        author: user,
-        content: message,
-      },
-    });
-  };
+  const { state, dispatch, sendMessage } = useRoom();
 
   if (state.loading) {
     return (
@@ -199,12 +22,13 @@ const Room = () => {
   return (
     <div className="flex flex-col overflow-hidden">
       <Header>
+        <IMovies />
         <Avatar.Group>
           {state.users.map((user) => (
             <Avatar
               key={user.id}
               src={user.avatar}
-              size="xl"
+              size="lg"
               color={"gradient"}
               bordered
             />
@@ -213,9 +37,7 @@ const Room = () => {
       </Header>
       <div
         className="flex flex-col items-center md:flex-row"
-        style={{
-          height: "calc(100vh - 104px)",
-        }}
+        style={{ height: "calc(100vh - 65px)" }}
       >
         <Video
           videoData={state.video}

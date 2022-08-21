@@ -8,9 +8,9 @@ const IMovies: React.FC<{
   return (
     <button
       onClick={onClick}
-      className="bg-[#009C7C] p-4 rounded-xl cursor-pointer"
+      className="bg-[#009C7C] p-3 rounded-xl cursor-pointer"
     >
-      <Image src={imoviesLogo} height="20px" />
+      <Image src={imoviesLogo} height="16px" />
     </button>
   );
 };
