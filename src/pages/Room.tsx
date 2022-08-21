@@ -1,15 +1,19 @@
-import { Avatar, Loading } from "@nextui-org/react";
+import { useState } from "react";
+import { Loading } from "@nextui-org/react";
 import { useUser } from "../lib/useUser";
-import Video from "../components/Video";
+import SearchModal from "../components/SearchModal";
+import useRoom from "../lib/hooks/useRoom";
+import Avatars from "../components/Avatars";
+import IMovies from "../components/iMovies";
 import Header from "../components/Header";
 import Center from "../components/Center";
+import Video from "../components/Video";
 import Chat from "../components/Chat";
-import IMovies from "../components/iMovies";
-import useRoom from "../lib/hooks/useRoom";
 
 const Room = () => {
   const user = useUser();
   const { state, dispatch, sendMessage } = useRoom();
+  const [visible, setVisible] = useState(false);
 
   if (state.loading) {
     return (
@@ -21,19 +25,10 @@ const Room = () => {
 
   return (
     <div className="flex flex-col overflow-hidden">
+      <SearchModal visible={visible} onClose={() => setVisible(false)} />
       <Header>
-        <IMovies />
-        <Avatar.Group>
-          {state.users.map((user) => (
-            <Avatar
-              key={user.id}
-              src={user.avatar}
-              size="lg"
-              color={"gradient"}
-              bordered
-            />
-          ))}
-        </Avatar.Group>
+        <IMovies onClick={() => setVisible(true)} />
+        <Avatars users={state.users} />
       </Header>
       <div
         className="flex flex-col items-center md:flex-row"

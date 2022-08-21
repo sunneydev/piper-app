@@ -3,7 +3,7 @@ import { Image } from "@nextui-org/react";
 import imoviesLogo from "../assets/imovies-logo.svg";
 
 const IMovies: React.FC<{
-  onClick?: () => {};
+  onClick?: () => void;
 }> = ({ onClick }) => {
   return (
     <button

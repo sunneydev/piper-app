@@ -16,21 +16,21 @@ const SearchModal: React.FC<{
       aria-labelledby="modal-title"
       open={visible}
       onClose={onClose}
-      width={"fit-content"}
+      width="55%"
+      className="h-[40em]"
     >
       <Modal.Header className="flex flex-col">
         <Input
           clearable
           bordered
-          fullWidth
           color="primary"
           size="lg"
           placeholder="Search"
           onChange={(e) => setSearchInput(e.target.value)}
         />
       </Modal.Header>
-      <Modal.Body>
-        <div className="grid grid-cols-4 gap-4">
+      <Modal.Body className="scrollbar">
+        <div className="grid grid-cols-4 gap-4 scrollbar">
           {results
             .filter((r) => r.poster)
             .map((res) => (
