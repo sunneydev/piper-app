@@ -1,8 +1,8 @@
-import { Button, Card, Col, Image, Row, Text } from "@nextui-org/react";
+import { Card, Row, Text } from "@nextui-org/react";
 import { SearchResult } from "../typings";
 
 const MovieCard: React.FC<SearchResult> = (props) => (
-  <Card css={{ w: "200px", h: "290px" }}>
+  <Card isHoverable isPressable css={{ w: "100%", h: "290px" }}>
     <Card.Body css={{ p: 0 }}>
       <Card.Image
         src={props.poster}
