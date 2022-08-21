@@ -64,7 +64,7 @@ const Video = (props: {
   }, [videoRef.current]);
 
   return (
-    <div className="border border-solid border-gray-100/20 p-2 w-full h-full">
+    <div className="border border-solid border-gray-100/20 w-full h-full">
       <video
         muted
         autoPlay

@@ -13,7 +13,7 @@ const GroupedMessages = (props: { messages: IMessage[]; author: User }) => {
       <div>
         <span className="font-bold">{author.name}</span>
         {messages.map((message, index) => (
-          <div key={index} className="flex-1 break-all">
+          <div key={index} className="flex-1 break-word">
             {message.content}
           </div>
         ))}
@@ -35,10 +35,16 @@ const Messages = (props: { messages: IMessage[] }) => {
   const groupedMessages = groupByProperty(messages, "authorId");
 
   return (
-    <div className="overflow-y-auto h-56  md:h-full" ref={groupChatDiv}>
+    <div
+      className="overflow-y-auto scrollbar h-56 md:h-full mb-1"
+      ref={groupChatDiv}
+    >
       {groupedMessages.map((groupedMessages, index) => (
         <div key={index}>
-          <GroupedMessages messages={groupedMessages} author={groupedMessages[0].author} />
+          <GroupedMessages
+            messages={groupedMessages}
+            author={groupedMessages[0].author}
+          />
           <Spacer />
         </div>
       ))}

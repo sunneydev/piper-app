@@ -11,6 +11,37 @@ import Header from "../components/Header";
 import Center from "../components/Center";
 import Chat from "../components/Chat";
 
+const reducer = (state: IRoomState, action: Action): IRoomState => {
+  switch (action.type) {
+    case "add-user":
+    case "remove-user":
+      return {
+        ...state,
+        users:
+          action.type === "add-user"
+            ? [...state.users, action.payload]
+            : state.users.filter((user) => user.id !== action.payload.id),
+      };
+    case "add-message":
+      return {
+        ...state,
+        messages: [...state.messages, action.payload],
+      };
+    case "set-video":
+      return {
+        ...state,
+        video: action.payload,
+      };
+    case "room":
+      return {
+        ...action.payload,
+        loading: false,
+      };
+    default:
+      return state;
+  }
+};
+
 const Room = () => {
   const initialState: IRoomState = {
     id: "",
@@ -119,7 +150,7 @@ const Room = () => {
   );
 
   useEffect(() => {
-    const socket = io("https://piper-api.sunney.dev");
+    const socket = io("http://localhost:5000");
 
     setSocket(socket);
 
@@ -135,14 +166,6 @@ const Room = () => {
       socket.disconnect();
     };
   }, [roomId, user]);
-
-  if (state.loading) {
-    return (
-      <Center>
-        <Loading size={"xl"} />
-      </Center>
-    );
-  }
 
   const dispatch = (action: Action) => {
     _dispatch(action);
@@ -165,8 +188,16 @@ const Room = () => {
     });
   };
 
+  if (state.loading) {
+    return (
+      <Center>
+        <Loading size={"xl"} />
+      </Center>
+    );
+  }
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-hidden">
       <Header>
         <Avatar.Group>
           {state.users.map((user) => (
@@ -181,7 +212,7 @@ const Room = () => {
         </Avatar.Group>
       </Header>
       <div
-        className="flex flex-col items-center md:flex-row "
+        className="flex flex-col items-center md:flex-row"
         style={{
           height: "calc(100vh - 104px)",
         }}
@@ -195,37 +226,6 @@ const Room = () => {
       </div>
     </div>
   );
-};
-
-const reducer = (state: IRoomState, action: Action): IRoomState => {
-  switch (action.type) {
-    case "add-user":
-    case "remove-user":
-      return {
-        ...state,
-        users:
-          action.type === "add-user"
-            ? [...state.users, action.payload]
-            : state.users.filter((user) => user.id !== action.payload.id),
-      };
-    case "add-message":
-      return {
-        ...state,
-        messages: [...state.messages, action.payload],
-      };
-    case "set-video":
-      return {
-        ...state,
-        video: action.payload,
-      };
-    case "room":
-      return {
-        ...action.payload,
-        loading: false,
-      };
-    default:
-      return state;
-  }
 };
 
 export default Room;
