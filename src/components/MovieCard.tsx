@@ -2,11 +2,20 @@ import { Card, Row, Text } from "@nextui-org/react";
 import { SearchResult } from "../typings";
 import React from "react";
 
-const MovieCard: React.FC<SearchResult> = (props) => (
-  <Card isHoverable isPressable css={{ w: "100%", h: "290px" }}>
+const MovieCard: React.FC<
+  SearchResult & {
+    onPress?: () => void;
+  }
+> = ({ poster, name, year, onPress }) => (
+  <Card
+    onPress={onPress}
+    isHoverable
+    isPressable
+    css={{ w: "100%", h: "290px" }}
+  >
     <Card.Body css={{ p: 0 }}>
       <Card.Image
-        src={props.poster}
+        src={poster}
         width="100%"
         height="100%"
         objectFit="cover"
@@ -24,7 +33,7 @@ const MovieCard: React.FC<SearchResult> = (props) => (
     >
       <Row align="center">
         <Text className="truncate max-w-6" size={16} weight="semibold">
-          {props.name} ({props.year})
+          {name} ({year})
         </Text>
       </Row>
     </Card.Footer>

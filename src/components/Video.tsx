@@ -19,6 +19,7 @@ const Video = (props: {
           url: video.src,
           time: owner ? video.currentTime : videoData.time,
           paused: video.paused,
+          subtitle: videoData.subtitle,
         },
       });
     }
@@ -75,7 +76,9 @@ const Video = (props: {
         src={videoData.url}
         onPause={emitVideoData}
         onPlay={emitVideoData}
-      />
+      >
+        <track kind="subtitles" src={videoData.subtitle} srcLang="en" />
+      </video>
     </div>
   );
 };

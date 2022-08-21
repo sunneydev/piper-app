@@ -26,7 +26,7 @@ const Join = () => {
             Cancel
           </Button>
         </Link>
-        <Button auto disabled={!roomId} onClick={handleNavigation}>
+        <Button auto disabled={!roomId} onPress={handleNavigation}>
           Join
         </Button>
       </div>

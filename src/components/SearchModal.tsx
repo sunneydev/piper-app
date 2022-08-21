@@ -6,7 +6,8 @@ import MovieCard from "./MovieCard";
 const SearchModal: React.FC<{
   visible: boolean;
   onClose?: () => void;
-}> = ({ visible, onClose }) => {
+  onSelect?: (movieId: string) => void;
+}> = ({ visible, onClose, onSelect }) => {
   const [searchInput, setSearchInput] = useState<string>();
   const results = useImoviesSearch(searchInput);
 
@@ -34,7 +35,14 @@ const SearchModal: React.FC<{
           {results
             .filter((r) => r.poster)
             .map((res) => (
-              <MovieCard key={res.id} {...res} />
+              <MovieCard
+                key={res.id}
+                {...res}
+                onPress={() => {
+                  onSelect && onSelect(String(res.id));
+                  onClose && onClose();
+                }}
+              />
             ))}
         </div>
       </Modal.Body>

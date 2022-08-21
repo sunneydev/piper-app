@@ -14,6 +14,7 @@ export interface IVideo {
   url: string;
   time: number;
   paused: boolean;
+  subtitle?: string;
 }
 export interface IRoom {
   id: string;
