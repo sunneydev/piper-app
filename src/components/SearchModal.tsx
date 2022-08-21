@@ -1,6 +1,6 @@
 import { Input, Modal } from "@nextui-org/react";
 import { useState } from "react";
-import useImovies from "../lib/hooks/useImovies";
+import useImoviesSearch from "../lib/hooks/useImoviesSearch";
 import MovieCard from "./MovieCard";
 
 const SearchModal: React.FC<{
@@ -8,7 +8,7 @@ const SearchModal: React.FC<{
   onClose?: () => void;
 }> = ({ visible, onClose }) => {
   const [searchInput, setSearchInput] = useState<string>();
-  const results = useImovies(searchInput);
+  const results = useImoviesSearch(searchInput);
 
   return (
     <Modal

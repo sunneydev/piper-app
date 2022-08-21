@@ -1,5 +1,6 @@
 import { Card, Row, Text } from "@nextui-org/react";
 import { SearchResult } from "../typings";
+import React from "react";
 
 const MovieCard: React.FC<SearchResult> = (props) => (
   <Card isHoverable isPressable css={{ w: "100%", h: "290px" }}>
@@ -30,4 +31,4 @@ const MovieCard: React.FC<SearchResult> = (props) => (
   </Card>
 );
 
-export default MovieCard;
+export default React.memo(MovieCard);

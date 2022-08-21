@@ -62,3 +62,27 @@ export interface SearchResult {
   imdb: number;
   year: number;
 }
+
+export interface Season {
+  season: number;
+  episodes: Episode[];
+}
+
+export interface Episode {
+  name: string;
+  episode: number;
+  files: File[];
+}
+
+export interface File {
+  lang: Lang;
+  subtitles: Subtitle[];
+  src: string;
+}
+
+export interface Subtitle {
+  lang: Lang;
+  url: string;
+}
+
+export type Lang = "ENG" | "GEO" | "RU";

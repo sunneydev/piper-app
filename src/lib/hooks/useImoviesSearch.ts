@@ -10,7 +10,7 @@ const searchQuery = (query: string) =>
     })
     .then(({ data }) => data);
 
-const useImovies = (search?: string) => {
+const useImoviesSearch = (search?: string) => {
   const [debounced] = useDebouncedValue(search, 500);
   const [results, setResults] = useState<SearchResult[]>([]);
 
@@ -27,4 +27,4 @@ const useImovies = (search?: string) => {
   return results;
 };
 
-export default useImovies;
+export default useImoviesSearch;
