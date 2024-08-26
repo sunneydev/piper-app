@@ -15,7 +15,7 @@ const myDarkTheme = createTheme({
   type: "dark",
 });
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "https://piper-api.snsh.cloud";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

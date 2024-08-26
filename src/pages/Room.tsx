@@ -22,7 +22,7 @@ const Room = () => {
   const [episode, setEpisode] = useState<MovieEpisode>();
 
   useEffect(() => {
-    if (!episode) return;
+    const socket = io("https://piper-api.snsh.cloud");
 
     const ep = episode.episode.files[episode.episode.files.length - 1];
 
